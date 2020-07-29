@@ -7,7 +7,7 @@ def main():
     summary_size = 2
 
     documents = []
-    documents_dir = Path('bbc_politics')
+    documents_dir = Path('data/bbc_politics')
     for file_path in documents_dir.files('*.txt'):
         with file_path.open(mode='rt', encoding='utf-8') as fp:
             documents.append(fp.readlines())
