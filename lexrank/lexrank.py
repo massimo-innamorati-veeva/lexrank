@@ -5,7 +5,7 @@ import numpy as np
 
 from lexrank.algorithms.power_method import (
     create_markov_matrix, create_markov_matrix_discrete,
-    stationary_distribution,
+    stationary_distribution, query_biased_stationary_distribution
 )
 from lexrank.utils.text import tokenize
 
@@ -41,6 +41,21 @@ def degree_centrality_scores(
     )
 
     return scores
+
+
+def query_biased_degree_centrality_scores(
+    similarity_matrix,
+    query_relevance_vector,
+):
+    markov_matrix = create_markov_matrix(similarity_matrix)
+
+    normalized_query_relevance_vector = query_relevance_vector / query_relevance_vector.sum()
+
+    scores = query_biased_stationary_distribution(
+        markov_matrix,
+        normalized_query_relevance_vector
+    )
+    return scores, markov_matrix
 
 
 class LexRank:
@@ -86,6 +101,49 @@ class LexRank:
 
         return summary
 
+    def get_query_focused_summary(
+        self,
+        sentences,
+        query,
+        summary_size=1,
+        omega=6,
+    ):
+        if not isinstance(summary_size, int) or summary_size < 1:
+            raise ValueError('\'summary_size\' should be a positive integer')
+
+        if query == "" or not query:
+            return self.get_summary(sentences, summary_size, threshold=None)
+
+        query_biased_info_scores, markov_matrix = self.rank_sentences_with_query(
+            sentences,
+            query
+        )
+
+        summary = []
+        length = len(sentences)
+
+        if summary_size > length:
+            summary_size = length
+
+        affinity_rank_score = np.copy(query_biased_info_scores)
+
+        while True:
+            sorted_ix = np.argsort(affinity_rank_score)[::-1]
+
+            top_rank_sentence_idx = sorted_ix[0]
+
+            summary.append(sentences[top_rank_sentence_idx])
+
+            affinity_rank_score[top_rank_sentence_idx] = -10000.0
+
+            for j in range(length):
+                affinity_rank_score[j] = affinity_rank_score[j] - omega * markov_matrix[j, top_rank_sentence_idx] * query_biased_info_scores[top_rank_sentence_idx]
+
+            if len(summary) >= summary_size:
+                break
+
+        return summary
+
     def rank_sentences(
         self,
         sentences,
@@ -105,6 +163,28 @@ class LexRank:
         )
 
         return scores
+
+    def rank_sentences_with_query(
+        self,
+        sentences,
+        query,
+    ):
+        tf_scores = [
+            Counter(self.tokenize_sentence(sentence)) for sentence in sentences
+        ]
+
+        similarity_matrix = self._calculate_similarity_matrix(tf_scores)
+
+        query_tf_score = Counter(self.tokenize_sentence(query))
+
+        query_relevance_vector = self._calculate_similarity_vector(tf_scores, query_tf_score)
+
+        scores, markov_matrix = query_biased_degree_centrality_scores(
+            similarity_matrix,
+            query_relevance_vector
+        )
+
+        return scores, markov_matrix
 
     def sentences_similarity(self, sentence_1, sentence_2):
         tf_1 = Counter(self.tokenize_sentence(sentence_1))
@@ -172,11 +252,49 @@ class LexRank:
 
         return similarity_matrix
 
+    def _calculate_similarity_vector(self, tf_scores, query_tf_score):
+        length = len(tf_scores)
+
+        similarity_vector = np.zeros([length])
+
+        for i in range(length):
+            similarity = self._idf_modified_cosine_one_pair(tf_scores[i], query_tf_score)
+
+            similarity_vector[i] = similarity
+
+        return similarity_vector
+
     def _idf_modified_cosine(self, tf_scores, i, j):
         if i == j:
             return 1
 
         tf_i, tf_j = tf_scores[i], tf_scores[j]
+        words_i, words_j = set(tf_i.keys()), set(tf_j.keys())
+
+        nominator = 0
+
+        for word in words_i & words_j:
+            idf = self.idf_score[word]
+            nominator += tf_i[word] * tf_j[word] * idf ** 2
+
+        if math.isclose(nominator, 0):
+            return 0
+
+        denominator_i, denominator_j = 0, 0
+
+        for word in words_i:
+            tfidf = tf_i[word] * self.idf_score[word]
+            denominator_i += tfidf ** 2
+
+        for word in words_j:
+            tfidf = tf_j[word] * self.idf_score[word]
+            denominator_j += tfidf ** 2
+
+        similarity = nominator / math.sqrt(denominator_i * denominator_j)
+
+        return similarity
+
+    def _idf_modified_cosine_one_pair(self, tf_i, tf_j):
         words_i, words_j = set(tf_i.keys()), set(tf_j.keys())
 
         nominator = 0

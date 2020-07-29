@@ -22,6 +22,25 @@ def _power_method(transition_matrix, increase_power=True):
             transition = np.dot(transition, transition)
 
 
+def _power_method_new(transition_matrix):
+    eigenvector = np.ones(len(transition_matrix))
+
+    if len(eigenvector) == 1:
+        return eigenvector
+
+    eigenvector = eigenvector / len(transition_matrix)
+
+    transition = transition_matrix.transpose()
+
+    while True:
+        eigenvector_next = np.dot(transition, eigenvector)
+
+        if np.allclose(eigenvector_next, eigenvector):
+            return eigenvector_next
+
+        eigenvector = eigenvector_next
+
+
 def connected_nodes(matrix):
     _, labels = connected_components(matrix)
 
@@ -88,3 +107,16 @@ def stationary_distribution(
         distribution /= n_1
 
     return distribution
+
+
+def query_biased_stationary_distribution(
+    transition_matrix,
+    normalized_query_relevance_vector
+):
+    d = 0.85
+    n_1, n_2 = transition_matrix.shape
+    if n_1 != n_2:
+        raise ValueError('\'transition_matrix\' should be square')
+    t_matrix = d * transition_matrix + (1-d) * normalized_query_relevance_vector
+    eigenvector = _power_method_new(t_matrix)
+    return eigenvector
