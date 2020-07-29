@@ -126,9 +126,6 @@ class LexRank:
         )
         print("query_biased_info_scores")
         print(query_biased_info_scores)
-        print("markov_matrix")
-        print(markov_matrix)
-        exit()
 
         summary = []
         length = len(sentences)
