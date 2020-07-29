@@ -68,12 +68,12 @@ def debug():
 def main(args):
     data_dir = args.data_dir
     split = args.split
-    pred_path = args.pred_path
     summary_size = args.summary_size
     omega = args.omega
 
     # make output dir
-
+    os.makedirs(args.pred_path)
+    os.makedirs(join(args.pred_path, 'output'))
 
     split_dir = join(data_dir, split)
     n_data = _count_data(split_dir)
