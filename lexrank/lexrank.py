@@ -51,8 +51,8 @@ def query_biased_degree_centrality_scores(
 
     normalized_query_relevance_vector = query_relevance_vector / query_relevance_vector.sum()
 
-    print("normalized query relevance vector:")
-    print(normalized_query_relevance_vector)
+    #print("normalized query relevance vector:")
+    #print(normalized_query_relevance_vector)
 
     #print("markov_matrix")
     #print(markov_matrix)

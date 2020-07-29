@@ -6,6 +6,7 @@ import re
 import argparse
 from os.path import join
 import json
+from tqdm import tqdm
 
 
 def _count_data(path):
@@ -64,7 +65,16 @@ def debug():
     print(query_focused_summary)
 
 
-def main(data_dir, split, summary_size, omega):
+def main(args):
+    data_dir = args.data_dir
+    split = args.split
+    pred_path = args.pred_path
+    summary_size = args.summary_size
+    omega = args.omega
+
+    # make output dir
+
+
     split_dir = join(data_dir, split)
     n_data = _count_data(split_dir)
     documents = []  # a list of list of str
@@ -80,15 +90,19 @@ def main(data_dir, split, summary_size, omega):
 
     lxr = LexRank(documents, stopwords=STOPWORDS['en'])
 
-    for doc_sent_list, query_str in zip(documents[:10], queries[:10]):
-        print("document:")
-        print(doc_sent_list)
-        print("query_str:")
-        print(query_str)
+    num_processed_doc = 0
+    for doc_sent_list, query_str in tqdm(zip(documents, queries), total=len(documents)):
+        #print("document:")
+        #print(doc_sent_list)
+        #print("query_str:")
+        #print(query_str)
         query_focused_summary = lxr.get_query_focused_summary(doc_sent_list, query_str, summary_size, omega)
-        print("summary:")
-        print(query_focused_summary)
-        print()
+        #print("summary:")
+        #print(query_focused_summary)
+        #print()
+        with open(join(args.pred_path, 'output/{}.dec'.format(num_processed_doc)), 'w') as f:
+            f.write('\n'.join(query_focused_summary))
+        num_processed_doc += 1
 
     # dump to json files
 
@@ -100,9 +114,11 @@ if __name__ == "__main__":
                         help='The directory of the data.')
     parser.add_argument('-split', type=str, action='store', default="test",
                         help='train or val or test.')
+    parser.add_argument('-pred_path', type=str, action='store', default="test",
+                        help='path of output.')
     parser.add_argument('-summary_size', type=int, action='store', default=2,
                         help='number of sentences in output summary. ')
     parser.add_argument('-omega', type=int, action='store', default=6,
                         help='The diversity penalty parameter.')
     args = parser.parse_args()
-    main(args.data_dir, args.split, summary_size=args.summary_size, omega=args.omega)
+    main(args)
