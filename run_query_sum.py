@@ -89,7 +89,10 @@ def main(args):
         js = json.load(open(join(split_dir, '{}.json'.format(i))))
         doc_sent_list = js['article']
         reference_entity_list = js["reference_entity_list_non_numerical"]
-        reference_entity_str = " ; ".join(reference_entity_list)
+        if reference_entity_list:
+            reference_entity_str = " ; ".join(reference_entity_list)
+        else:
+            reference_entity_str = ""
         documents.append(doc_sent_list)
         queries.append(reference_entity_str)
 
