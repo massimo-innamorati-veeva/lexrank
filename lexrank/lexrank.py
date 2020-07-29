@@ -49,7 +49,12 @@ def query_biased_degree_centrality_scores(
 ):
     markov_matrix = create_markov_matrix(similarity_matrix)
 
-    normalized_query_relevance_vector = query_relevance_vector / query_relevance_vector.sum()
+    query_relevance_sum = query_relevance_vector.sum()
+    if query_relevance_sum == 0:
+        length = len(query_relevance_vector)
+        normalized_query_relevance_vector = np.ones((length)) / length
+    else:
+        normalized_query_relevance_vector = query_relevance_vector / query_relevance_vector.sum()
 
     #print("normalized query relevance vector:")
     #print(normalized_query_relevance_vector)
