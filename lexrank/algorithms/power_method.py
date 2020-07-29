@@ -119,4 +119,6 @@ def query_biased_stationary_distribution(
         raise ValueError('\'transition_matrix\' should be square')
     t_matrix = d * transition_matrix + (1-d) * normalized_query_relevance_vector
     eigenvector = _power_method_new(t_matrix)
+    print("eigenvector: ")
+    print(eigenvector)
     return eigenvector

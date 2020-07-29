@@ -51,6 +51,12 @@ def query_biased_degree_centrality_scores(
 
     normalized_query_relevance_vector = query_relevance_vector / query_relevance_vector.sum()
 
+    print("normalized query relevance vector:")
+    print(normalized_query_relevance_vector)
+
+    print("markov_matrix")
+    print(markov_matrix)
+
     scores = query_biased_stationary_distribution(
         markov_matrix,
         normalized_query_relevance_vector
@@ -120,6 +126,9 @@ class LexRank:
         )
         print("query_biased_info_scores")
         print(query_biased_info_scores)
+        print("markov_matrix")
+        print(markov_matrix)
+        exit()
 
         summary = []
         length = len(sentences)
@@ -188,8 +197,6 @@ class LexRank:
 
         print("query_relevance_vector")
         print(query_relevance_vector)
-
-        exit()
 
         scores, markov_matrix = query_biased_degree_centrality_scores(
             similarity_matrix,
