@@ -79,6 +79,7 @@ def main(args):
     # make output dir
     os.makedirs(args.pred_path)
     os.makedirs(join(args.pred_path, 'output'))
+    json.dump(vars(args), open(join(args.pred_path, 'log.json'), 'w'))
 
     split_dir = join(data_dir, split)
     n_data = _count_data(split_dir)
