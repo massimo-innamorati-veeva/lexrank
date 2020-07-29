@@ -187,7 +187,7 @@ class LexRank:
         query_relevance_vector = self._calculate_similarity_vector(tf_scores, query_tf_score)
 
         print("query_relevance_vector")
-        print()
+        print(query_relevance_vector)
 
         exit()
 
