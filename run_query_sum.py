@@ -3,7 +3,7 @@ from lexrank.mappings.stopwords import STOPWORDS
 from path import Path
 
 def main():
-    omega = 6
+    omega = 0
     summary_size = 2
 
     documents = []
@@ -15,8 +15,8 @@ def main():
     lxr = LexRank(documents, stopwords=STOPWORDS['en'])
     #for document in documents:
     #    query_focused_summary = lxr.get_query_focused_summary(document, query, summary_size, omega)
-    #query = "George Osborne"
-    query = ""
+    query = "George Osborne"
+    #query = ""
     document = [
     'One of David Cameron\'s closest friends and Conservative allies, '
     'George Osborne rose rapidly after becoming MP for Tatton in 2001.',

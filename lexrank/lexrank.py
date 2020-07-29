@@ -118,6 +118,8 @@ class LexRank:
             sentences,
             query
         )
+        print("query_biased_info_scores")
+        print(query_biased_info_scores)
 
         summary = []
         length = len(sentences)
@@ -177,7 +179,17 @@ class LexRank:
 
         query_tf_score = Counter(self.tokenize_sentence(query))
 
+        print("tokenized query")
+        print(self.tokenize_sentence(query))
+        print("query_tf_score")
+        print(query_tf_score)
+
         query_relevance_vector = self._calculate_similarity_vector(tf_scores, query_tf_score)
+
+        print("query_relevance_vector")
+        print()
+
+        exit()
 
         scores, markov_matrix = query_biased_degree_centrality_scores(
             similarity_matrix,
