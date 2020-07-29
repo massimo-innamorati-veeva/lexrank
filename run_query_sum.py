@@ -69,23 +69,18 @@ def main(data_dir, split, summary_size, omega):
     n_data = _count_data(split_dir)
     documents = []  # a list of list of str
     queries = []  # a list of str
-    #for i in range(n_data):
-    for i in range(10):
+    for i in range(n_data):
+    #for i in range(10):
         js = json.load(open(join(split_dir, '{}.json'.format(i))))
         doc_sent_list = js['article']
         reference_entity_list = js["reference_entity_list_non_numerical"]
         reference_entity_str = " ; ".join(reference_entity_list)
         documents.append(doc_sent_list)
         queries.append(reference_entity_str)
-        print("document")
-        print(doc_sent_list)
-        print("query_str")
-        print(reference_entity_str)
-        exit()
 
     lxr = LexRank(documents, stopwords=STOPWORDS['en'])
 
-    for doc_sent_list, query_str in zip(documents, queries):
+    for doc_sent_list, query_str in zip(documents[:10], queries[:10]):
         print("document:")
         print(doc_sent_list)
         print("query_str:")
