@@ -54,8 +54,8 @@ def query_biased_degree_centrality_scores(
     print("normalized query relevance vector:")
     print(normalized_query_relevance_vector)
 
-    print("markov_matrix")
-    print(markov_matrix)
+    #print("markov_matrix")
+    #print(markov_matrix)
 
     scores = query_biased_stationary_distribution(
         markov_matrix,
@@ -124,8 +124,8 @@ class LexRank:
             sentences,
             query
         )
-        print("query_biased_info_scores")
-        print(query_biased_info_scores)
+        #print("query_biased_info_scores")
+        #print(query_biased_info_scores)
 
         summary = []
         length = len(sentences)
@@ -185,15 +185,15 @@ class LexRank:
 
         query_tf_score = Counter(self.tokenize_sentence(query))
 
-        print("tokenized query")
-        print(self.tokenize_sentence(query))
-        print("query_tf_score")
-        print(query_tf_score)
+        #print("tokenized query")
+        #print(self.tokenize_sentence(query))
+        #print("query_tf_score")
+        #print(query_tf_score)
 
         query_relevance_vector = self._calculate_similarity_vector(tf_scores, query_tf_score)
 
-        print("query_relevance_vector")
-        print(query_relevance_vector)
+        #print("query_relevance_vector")
+        #print(query_relevance_vector)
 
         scores, markov_matrix = query_biased_degree_centrality_scores(
             similarity_matrix,
