@@ -9,6 +9,11 @@ import json
 from tqdm import tqdm
 
 
+def make_html_safe(s):
+    """Rouge use html, has to make output html safe"""
+    return s.replace("<", "&lt;").replace(">", "&gt;")
+
+
 def _count_data(path):
     """ count number of data in the given path"""
     matcher = re.compile(r'[0-9]+\.json')
@@ -101,7 +106,7 @@ def main(args):
         #print(query_focused_summary)
         #print()
         with open(join(args.pred_path, 'output/{}.dec'.format(num_processed_doc)), 'w') as f:
-            f.write('\n'.join(query_focused_summary))
+            f.write(make_html_safe('\n'.join(query_focused_summary)))
         num_processed_doc += 1
 
     # dump to json files
