@@ -26,9 +26,9 @@ def _count_data(path):
 
 
 def postprocess_text(preds, labels):
-    preds = ["\n".join(pred) for pred in preds]
-    labels = ["\n".join(label) for label in labels]
-    return preds, labels
+    _preds = ["\n".join(pred) for pred in preds]
+    _labels = ["\n".join(label) for label in labels]
+    return _preds, _labels
 
 
 def main(args):
@@ -68,14 +68,16 @@ def main(args):
         out_summaries.append(query_focused_summary)
         num_processed_doc += 1
 
-    # post process sumamry
-    out_sum_for_rouge = []
-    for sum_sent_list in out_summaries:
-        out_sum_str = "\n".join(sum_sent_list)
-        out_sum_for_rouge.append(out_sum_str)
-
+    # compute rouge
     metric = load_metric("rouge")
-    result = metric.compute(predictions=decoded_preds, references=decoded_labels, use_stemmer=True)
+    out_summaries_for_rouge, ref_summaries_for_rouge = postprocess_text(out_summaries, ref_summaries)
+
+    result = metric.compute(predictions=out_summaries_for_rouge, references=ref_summaries_for_rouge, use_stemmer=True)
+
+    result = {key: value.mid.fmeasure * 100 for key, value in result.items()}
+
+    print("Scores:")
+    print(result)
 
     with open(join(args.pred_path, "output.txt"), "w") as f_out:
         f_out.write('\n'.join(out_summaries))
