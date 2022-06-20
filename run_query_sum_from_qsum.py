@@ -82,7 +82,7 @@ def main(args):
 
     os.makedirs(args.pred_path)
     with open(join(args.pred_path, "output.txt"), "w") as f_out:
-        f_out.write('\n'.join(out_summaries))
+        f_out.write('\n'.join(out_summaries_for_export))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
