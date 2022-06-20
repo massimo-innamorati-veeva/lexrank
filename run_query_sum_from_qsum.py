@@ -86,13 +86,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description=('Query-focused summarization')
     )
-    parser.add_argument('-filenmae', type=str, action='store', required=True,
+    parser.add_argument('--filenmae', type=str, action='store', required=True,
                         help='The directory of the data.')
-    parser.add_argument('-pred_path', type=str, action='store', default="test",
+    parser.add_argument('--pred_path', type=str, action='store', default="test",
                         help='path of output.')
-    parser.add_argument('-summary_size', type=int, action='store', default=2,
+    parser.add_argument('--summary_size', type=int, action='store', default=2,
                         help='number of sentences in output summary. ')
-    parser.add_argument('-omega', type=int, action='store', default=4,
+    parser.add_argument('--omega', type=int, action='store', default=4,
                         help='The diversity penalty parameter.')
     args = parser.parse_args()
     main(args)
