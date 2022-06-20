@@ -36,7 +36,6 @@ def main(args):
     summary_size = args.summary_size
     omega = args.omega
     # make output dir
-    os.makedirs(args.pred_path)
     #os.makedirs(join(args.pred_path, 'output'))
     #json.dump(vars(args), open(join(args.pred_path, 'log.json'), 'w'))
 
@@ -79,6 +78,9 @@ def main(args):
     print("Scores:")
     print(result)
 
+    out_summaries_for_export = [" ".join(sum) for sum in out_summaries]
+
+    os.makedirs(args.pred_path)
     with open(join(args.pred_path, "output.txt"), "w") as f_out:
         f_out.write('\n'.join(out_summaries))
 
