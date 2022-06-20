@@ -127,7 +127,7 @@ if __name__ == "__main__":
                         help='path of output.')
     parser.add_argument('-summary_size', type=int, action='store', default=2,
                         help='number of sentences in output summary. ')
-    parser.add_argument('-omega', type=int, action='store', default=6,
+    parser.add_argument('-omega', type=int, action='store', default=4,
                         help='The diversity penalty parameter.')
     args = parser.parse_args()
     main(args)
