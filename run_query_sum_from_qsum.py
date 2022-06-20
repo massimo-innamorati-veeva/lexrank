@@ -8,6 +8,7 @@ from os.path import join
 import json
 from tqdm import tqdm
 import jsonlines
+from datasets import load_dataset, load_metric
 
 
 def make_html_safe(s):
@@ -24,6 +25,12 @@ def _count_data(path):
     return n_data
 
 
+def postprocess_text(preds, labels):
+    preds = ["\n".join(pred) for pred in preds]
+    labels = ["\n".join(label) for label in labels]
+    return preds, labels
+
+
 def main(args):
     filename = args.filenmae
     summary_size = args.summary_size
@@ -35,6 +42,7 @@ def main(args):
 
     documents = []  # a list of list of str
     queries = []  # a list of str
+    ref_summaries = []
     # out_sample = {"text": " ".join(text_list), "query": query, "target": reference_summary}
     with jsonlines.open(filename) as f:
         for line_i, line in enumerate(tqdm(f)):
@@ -42,6 +50,7 @@ def main(args):
             query = line["query"]
             documents.append(doc_sent_list)
             queries.append(query)
+            ref_summaries.append(line["target_sent_list"])
 
     lxr = LexRank(documents, stopwords=STOPWORDS['en'])
 
@@ -58,6 +67,15 @@ def main(args):
         #print()
         out_summaries.append(query_focused_summary)
         num_processed_doc += 1
+
+    # post process sumamry
+    out_sum_for_rouge = []
+    for sum_sent_list in out_summaries:
+        out_sum_str = "\n".join(sum_sent_list)
+        out_sum_for_rouge.append(out_sum_str)
+
+    metric = load_metric("rouge")
+    result = metric.compute(predictions=decoded_preds, references=decoded_labels, use_stemmer=True)
 
     with open(join(args.pred_path, "output.txt"), "w") as f_out:
         f_out.write('\n'.join(out_summaries))
