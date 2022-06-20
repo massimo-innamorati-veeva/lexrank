@@ -32,7 +32,7 @@ def postprocess_text(preds, labels):
 
 
 def main(args):
-    filename = args.filenmae
+    filename = args.filename
     summary_size = args.summary_size
     omega = args.omega
     # make output dir
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description=('Query-focused summarization')
     )
-    parser.add_argument('--filenmae', type=str, action='store', required=True,
+    parser.add_argument('--filename', type=str, action='store', required=True,
                         help='The directory of the data.')
     parser.add_argument('--pred_path', type=str, action='store', default="test",
                         help='path of output.')
