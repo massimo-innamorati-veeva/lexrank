@@ -100,7 +100,7 @@ def main(args):
     lxr = LexRank(documents, stopwords=STOPWORDS['en'])
 
     num_processed_doc = 0
-    with open(join(args.pred_path, "output.txt"), "w") as f_out:
+    with open(join(args.pred_path, "output_all.txt"), "w") as f_out:
         for doc_sent_list, query_str in tqdm(zip(documents, queries), total=len(documents)):
             #print("document:")
             #print(doc_sent_list)
