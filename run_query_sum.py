@@ -100,18 +100,20 @@ def main(args):
     lxr = LexRank(documents, stopwords=STOPWORDS['en'])
 
     num_processed_doc = 0
-    for doc_sent_list, query_str in tqdm(zip(documents, queries), total=len(documents)):
-        #print("document:")
-        #print(doc_sent_list)
-        #print("query_str:")
-        #print(query_str)
-        query_focused_summary = lxr.get_query_focused_summary(doc_sent_list, query_str, summary_size, omega)
-        #print("summary:")
-        #print(query_focused_summary)
-        #print()
-        with open(join(args.pred_path, 'output/{}.dec'.format(num_processed_doc)), 'w') as f:
-            f.write(make_html_safe('\n'.join(query_focused_summary)))
-        num_processed_doc += 1
+    with open(join(args.pred_path, "output.txt"), "w") as f_out:
+        for doc_sent_list, query_str in tqdm(zip(documents, queries), total=len(documents)):
+            #print("document:")
+            #print(doc_sent_list)
+            #print("query_str:")
+            #print(query_str)
+            query_focused_summary = lxr.get_query_focused_summary(doc_sent_list, query_str, summary_size, omega)
+            #print("summary:")
+            #print(query_focused_summary)
+            #print()
+            with open(join(args.pred_path, 'output/{}.dec'.format(num_processed_doc)), 'w') as f:
+                f.write(make_html_safe('\n'.join(query_focused_summary)))
+            f_out.write(" ".join(query_focused_summary) + "\n")
+            num_processed_doc += 1
 
     # dump to json files
 
