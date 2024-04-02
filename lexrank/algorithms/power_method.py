@@ -58,7 +58,7 @@ def create_markov_matrix(weights_matrix):
     if n_1 != n_2:
         raise ValueError('\'weights_matrix\' should be square')
 
-    row_sum = weights_matrix.sum(axis=1, keepdims=True)
+    row_sum = weights_matrix.sum(axis=1, keepdims=True) + 1.e-7
 
     return weights_matrix / row_sum
 
