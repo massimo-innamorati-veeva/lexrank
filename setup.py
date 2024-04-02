@@ -12,7 +12,7 @@ readme = Path(__file__).parent / 'README.rst'
 with readme.open(mode='rt', encoding='utf-8') as fp:
     readme_text = fp.read()
 
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 setup(
     name='lexrank',
